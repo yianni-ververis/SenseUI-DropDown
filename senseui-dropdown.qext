@@ -1,0 +1,9 @@
+{
+	"name" : "SenseUI-DropDown",
+	"description" : "A Simple Drop Down",
+	"icon" : "text-image",
+	"type" : "visualization",
+	"version": "1.0",
+	"preview" : "text-image",
+	"author": "Yianni Ververis"
+}
