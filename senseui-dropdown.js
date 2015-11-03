@@ -75,6 +75,12 @@ define([
 									ref: "btnTxtColorHex",
 									defaultValue: ''
 								},
+								btnLabel: {
+									type: "string",
+									label: "Button Label",
+									ref: "btnLabel",
+									defaultValue: 'Select Text'
+								},
 							}
 						}
 					}
@@ -118,7 +124,7 @@ define([
 		var me = {
 			btnBgColor: ($scope.$parent.layout.btnBgColorhex) ? $scope.$parent.layout.btnBgColorhex : Theme.palette[$scope.$parent.layout.btnBgColor],
 			items: {},
-			currentItem: 'Select One',
+			currentItem: $scope.$parent.layout.btnLabel,
 			dimension: $scope.$parent.layout.qHyperCube.qDimensionInfo[0].qFallbackTitle
 		}
 		
@@ -127,8 +133,6 @@ define([
 			var selectedFields = reply.qSelectionObject.qSelections;
 			if (selectedFields.length >= 1) {
 				$.each(selectedFields, function(key, value) {
-					console.log(value.qField);
-					console.log(me.dimension);
 					if (value.qField !== me.dimension) {
 						$scope.currentItem = me.currentItem;
 						$('#SenseUI-DropDown .scrollable-menu li').removeClass('active');
@@ -146,7 +150,7 @@ define([
 				me.items[key] = value[0];
 			}				
 		});
-		
+
 		$scope.items = me.items;
 		$scope.currentItem = me.currentItem;
 
