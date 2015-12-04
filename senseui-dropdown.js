@@ -1,29 +1,58 @@
 define([
 	"qlik",
-	"jquery", 
-	"text!./bootstrap.css",
-	"text!./senseui-dropdown.css",
+	"jquery",
+	"qvangular",
+	'underscore',
 	"core.utils/theme",
-	"./bootstrap.min",
-	"text!./template.html"
-], function(qlik, $, cssBootstrap, cssContent, Theme, ngBootstrap, template) {
+	"./bootstrap.min"
+], function(qlik, $, qvangular, _, Theme, ngBootstrap) {
 'use strict';
 
 	// Inject the custom CSS
-	$("<style>").html(cssBootstrap).prependTo("head");
-	$("<style>").html(cssContent).appendTo("head");
+	var vhost = '/extensions',
+		whitelist = [
+			'localhost:4848',
+			'demos.qlik.com'	
+		];
 
+	if ($.inArray(window.location.host, whitelist) == -1) {
+		vhost = 'https://demos.qlik.com/extensions';
+	}
+	
+	var css1 = vhost + '/senseui-dropdown/bootstrap.css',
+		css2 = vhost + '/senseui-dropdown/senseui-dropdown.css';
+
+	ajax(css1);
+	ajax(css2);
+
+	function ajax (uri) {
+		$.ajax({
+			url: uri,
+			async: true,
+			crossDomain : true,
+			success: function (file) {
+				$("<style>").html(file).appendTo("head");
+			},
+			error: function (e) {
+				console.log(e);
+				console.log(uri);
+			}
+		});
+	};
 
 	// Define properties
-	var app = {
+	var me = {
 		initialProperties : {
 			version : 1.0,
-			qHyperCubeDef : {
-				qDimensions : [],
-				qMeasures : [],
-				qInitialDataFetch : [{
-					qWidth : 1,
-					qHeight : 1000
+			qListObjectDef: {
+				qShowAlternatives: true,
+				qFrequencyMode : "V",
+				qSortCriterias : {
+					qSortByState : 1
+				},
+				qInitialDataFetch: [{
+					qWidth: 2,
+					qHeight: 1000
 				}]
 			},
 			AllowChanges: false
@@ -32,10 +61,34 @@ define([
 			type : "items",
 			component : "accordion",
 			items : {
-				dimensions : {
-					uses : "dimensions",
+				dimension : {
+					type : "items",
+					label : "Dimensions",
+					ref : "qListObjectDef",
 					min : 1,
-					max : 1
+					max : 1,
+					items : {
+						libraryId : {
+							type : "string",
+							component : "library-item",
+							libraryItemType : "dimension",
+							ref : "qListObjectDef.qLibraryId",
+							label : "Dimension",
+							show : function(data) {
+								return data.qListObjectDef && data.qListObjectDef.qLibraryId;
+							}
+						},
+						field : {
+							type : "string",
+							expression : "always",
+							expressionType : "dimension",
+							ref : "qListObjectDef.qDef.qFieldDefs.0",
+							label : "Field",
+							show : function(data) {
+								return data.qListObjectDef && !data.qListObjectDef.qLibraryId;
+							}
+						},
+					}
 				},
 				sorting : {
 					uses : "sorting"
@@ -90,76 +143,93 @@ define([
 	};
 	
 	// Get Engine API app for Selections
-	app.app = qlik.currApp(this);
+	me.app = qlik.currApp(this);
 
 	// Alter properties on edit		
-	app.paint = function($element,layout) {
+	me.paint = function($element,layout) {
 		// Set height of the drop down
-		var me = {
+		var vars = {
 			btnHeight: 50,
 			btnBgColor: '#ffffff',
 			btnTxtColor: '#333333',
 			divPadding: 10,
 			divHeight: 400
 		}
+		
 		// Height of popup
-		me.divHeight = $element[0].offsetHeight - me.btnHeight - me.divPadding;
-		$('#SenseUI-DropDown .scrollable-menu').css('min-height', me.divHeight+'px');
-		$('#SenseUI-DropDown .scrollable-menu').css('max-height', me.divHeight+'px');
+		vars.divHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
+		$('#SenseUI-DropDown .scrollable-menu').css('min-height', vars.divHeight+'px');
+		$('#SenseUI-DropDown .scrollable-menu').css('max-height', vars.divHeight+'px');
 
 		// Button Colors
-		me.btnBgColor = (layout.btnBgColorHex !== '') ? layout.btnBgColorHex : Theme.palette[layout.btnBgColor];
-		me.btnTxtColor = (layout.btnTxtColorHex !== '') ? layout.btnTxtColorHex : Theme.palette[layout.btnTxtColor];
-		$('#SenseUI-DropDown .btn.btn-default').css('background-color', me.btnBgColor);
-		$('#SenseUI-DropDown .btn.btn-default').css('color', me.btnTxtColor);
-
+		vars.btnBgColor = (layout.btnBgColorHex !== '') ? layout.btnBgColorHex : Theme.palette[layout.btnBgColor];
+		vars.btnTxtColor = (layout.btnTxtColorHex !== '') ? layout.btnTxtColorHex : Theme.palette[layout.btnTxtColor];
+		$('#SenseUI-DropDown .btn.btn-default').css('background-color', vars.btnBgColor);
+		$('#SenseUI-DropDown .btn.btn-default').css('color', vars.btnTxtColor);
 	};
 
-	// define HTML template
-	app.template = template;
+	// define HTML template	
+	me.template = '\
+		<div qv-extension class="ng-scope" id="SenseUI-DropDown">\n\
+			<div class="dropdown">\n\
+				<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">\n\
+					{{currentItem}} <span class="caret"></span>\n\
+				</button>\n\
+				<ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">\n\
+					<li ng-repeat="item in items" ng-class="(item.qText===currentItem) ? \'active\' : \'\' ">\n\
+						<a ng-click="select(this)">{{item.qText}}</a>\n\
+					</li>\n\
+				</ul>\n\
+			</div>\n\
+		</div>\n\
+	';
 
 	// Controller for binding
-	app.controller =['$scope', function($scope){
+	me.controller =['$scope', function($scope){
+		var field = $scope.$parent.layout.qListObject.qDimensionInfo.qGroupFieldDefs[0];
+		var object = $scope.$parent.layout.qListObject.qDataPages[0].qMatrix;
+
 		var self = this;
-		var me = {
-			btnBgColor: ($scope.$parent.layout.btnBgColorhex) ? $scope.$parent.layout.btnBgColorhex : Theme.palette[$scope.$parent.layout.btnBgColor],
+		var vars = {
 			items: {},
 			currentItem: $scope.$parent.layout.btnLabel,
-			dimension: $scope.$parent.layout.qHyperCube.qDimensionInfo[0].qFallbackTitle
-		}
-		
+			dimension: field
+		}	
 		// Get Selections
-		app.app.getList("SelectionObject", function(reply){
+		me.app.getList("SelectionObject", function(reply){
 			var selectedFields = reply.qSelectionObject.qSelections;
+
 			if (selectedFields.length >= 1) {
 				$.each(selectedFields, function(key, value) {
-					if (value.qField !== me.dimension) {
-						$scope.currentItem = me.currentItem;
+					if (value.qField !== vars.dimension) {
+						$scope.currentItem = vars.currentItem;
 						$('#SenseUI-DropDown .scrollable-menu li').removeClass('active');
+					} else {
+						$scope.currentItem = selectedFields[0].qSelectedFieldSelectionInfo[0].qName;
 					}
 				});
 			} else {			
-				$scope.currentItem = me.currentItem;
+				$scope.currentItem = $scope.$parent.layout.btnLabel;
 				$('#SenseUI-DropDown .scrollable-menu li').removeClass('active');
 			}
 
 		});
 
-		$.each($scope.$parent.layout.qHyperCube.qDataPages[0].qMatrix, function(key, value) {
+		$.each(object, function(key, value) {
 			if (typeof value[0].qText !== 'undefined') {
-				me.items[key] = value[0];
+				vars.items[key] = value[0];
 			}				
 		});
 
-		$scope.items = me.items;
-		$scope.currentItem = me.currentItem;
+		$scope.items = vars.items;
+		$scope.currentItem = vars.currentItem;
 
 		$scope.select = function (element) {
-			$scope.currentItem = element.item.qText;
+			vars.currentItem = $scope.currentItem = element.item.qText;
 			$scope.backendApi.selectValues(0, [element.item.qElemNumber], false);
 		}
 
 	}];
 
-	return app;
+	return me;
 });

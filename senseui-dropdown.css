@@ -1,3 +1,8 @@
+#SenseUI-DropDown {
+	height: 100%; 
+	position: relative; 
+	overflow: auto;
+}
 #dropdownP {
   padding: 5px;
 }
