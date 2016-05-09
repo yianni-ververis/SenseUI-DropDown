@@ -259,7 +259,7 @@ define([
 		//hack to show the popup on top of the container
 		$( 'div[tid="' + vars.id + '"] article' ).css( "overflow", 'visible' );
 
-		console.info('%c SenseUI-DropDown: ', 'color: red', 'Loaded!');
+		console.info('%c SenseUI-DropDown: ', 'color: red', '#' + vars.id + ' Loaded!');
 	};
 
 	// define HTML template	
