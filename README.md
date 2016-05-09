@@ -9,6 +9,7 @@ It uses Bootstrap and underscore
 - Allow Sorting
 - For getting all results ignoring selections you can add a measure like Count({1} Year)
 - Set the popup height from settings and have it on top of the container
+- Adjust Corner radius
 
 Coming up, like the senseui-filter:
 - Sort by selected

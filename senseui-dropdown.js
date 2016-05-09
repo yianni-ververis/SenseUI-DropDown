@@ -137,6 +137,12 @@ define([
 									defaultValue: 200,
 									ref: "vars.popupHeight"
 								},
+								borderRadius: {
+									type: "string",
+									label: "Border Radius",
+									ref: "vars.borderRadius",
+									defaultValue: 4
+								},
 							}
 						}
 					}
@@ -171,6 +177,7 @@ define([
 			btnTxtColor: '#333333',
 			divPadding: 10,
 			popupHeight: (layout.vars.popupHeight)?layout.vars.popupHeight: 200,
+			borderRadius: (layout.vars.borderRadius) ? layout.vars.borderRadius : 4,
 		}
 		
 		vars.data = vars.data.map(function(d) {
@@ -245,6 +252,8 @@ define([
 				$(this).css("background-color", vars.row.backgroundColor);
 			}
 		);
+		$( '#' + vars.id + '_senseui_dropdown .btn-default' ).css( "border-radius", vars.borderRadius + 'px' );
+		$( '#' + vars.id + '_senseui_dropdown .dropdown-menu' ).css( "border-radius", vars.borderRadius + 'px' );
 
 		// Height of popup
 		// vars.popupHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
