@@ -130,6 +130,13 @@ define([
 									defaultValue: "#77b62a",
 									ref: "vars.row.backgroundHoverColor"
 								},
+								popupHeight: {
+									type: "string",
+									expression: "none",
+									label: "Popup Height",
+									defaultValue: 200,
+									ref: "vars.popupHeight"
+								},
 							}
 						}
 					}
@@ -163,7 +170,7 @@ define([
 			},
 			btnTxtColor: '#333333',
 			divPadding: 10,
-			divHeight: 400,
+			popupHeight: (layout.vars.popupHeight)?layout.vars.popupHeight: 200,
 		}
 		
 		vars.data = vars.data.map(function(d) {
@@ -175,17 +182,6 @@ define([
 				"qState":d[0].qState,
 			}
 		});
-
-		// Height of popup
-		vars.divHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
-		$('#SenseUI-DropDown .scrollable-menu').css('min-height', vars.divHeight+'px');
-		$('#SenseUI-DropDown .scrollable-menu').css('max-height', vars.divHeight+'px');
-
-		// Button Colors
-		vars.btnBgColor = (layout.btnBgColorHex !== '') ? layout.btnBgColorHex : Theme.palette[layout.btnBgColor];
-		vars.btnTxtColor = (layout.btnTxtColorHex !== '') ? layout.btnTxtColorHex : Theme.palette[layout.btnTxtColor];
-		$('#SenseUI-DropDown .btn.btn-default').css('background-color', vars.btnBgColor);
-		$('#SenseUI-DropDown .btn.btn-default').css('color', vars.btnTxtColor);
 
 		//Get Selection Bar
 		me.app.getList("SelectionObject", function(reply){
@@ -210,7 +206,7 @@ define([
 		}
 
 		vars.template = '\
-			<div qv-extension class="senseui-filter" id="' + vars.id + '_senseui_dropdown">\
+			<div qv-extension class="senseui-dropdown" id="' + vars.id + '_senseui_dropdown">\
 				<div class="dropdown">\n\
 					<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">\n\
 						' + vars.btnLabel + ' <span class="caret"></span>\n\
@@ -249,8 +245,21 @@ define([
 				$(this).css("background-color", vars.row.backgroundColor);
 			}
 		);
-
-		// $('.dropdown-menu').appendTo($("body"))
+console.log(vars.id);
+console.log(vars.popupHeight);
+		// Height of popup
+		// vars.popupHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
+		// $('#SenseUI-DropDown .scrollable-menu').css('min-height', vars.popupHeight+'px');
+		// $('#SenseUI-DropDown .scrollable-menu').css('max-height', vars.popupHeight+'px');
+		// $( '#KfgBJXX_senseui_dropdown .scrollable-menu' ).css( "height", 200); 
+		$( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "height", vars.popupHeight); 
+		// Button Colors
+		vars.btnBgColor = (layout.btnBgColorHex !== '') ? layout.btnBgColorHex : Theme.palette[layout.btnBgColor];
+		vars.btnTxtColor = (layout.btnTxtColorHex !== '') ? layout.btnTxtColorHex : Theme.palette[layout.btnTxtColor];
+		$('#SenseUI-DropDown .btn.btn-default').css('background-color', vars.btnBgColor);
+		$('#SenseUI-DropDown .btn.btn-default').css('color', vars.btnTxtColor);
+		//hack to show the popup on top of the container
+		$( 'div[tid="' + vars.id + '"] article' ).css( "overflow", 'visible' );
 	};
 
 	// define HTML template	
