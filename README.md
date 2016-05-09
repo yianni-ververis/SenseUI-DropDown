@@ -14,3 +14,7 @@ Coming up, like the senseui-filter:
 - Toggle visibility of measure
 
 ![SenseUI - Drop Down](/screenshot1.png?raw=true "SenseUI - Drop Down")
+
+---
+
+[Download zip file](https://github.com/yianni-ververis/SenseUI-DropDown/archive/master.zip)
