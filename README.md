@@ -3,6 +3,14 @@ A bootstrap Drop Down for making a single selection
 
 It uses Bootstrap and underscore
 
-If you use it on your QMC just add the host into the whitelist
+** Features: **
+- Allow Multiple or Single Selections
+- Hover state colors for text and background
+- Allow Sorting
+- For getting all results ignoring selections you can add a measure like Count({1} Year)
+
+Coming up, like the senseui-filter:
+- Sort by selected
+- Toggle visibility of measure
 
 ![SenseUI - Drop Down](/screenshot1.png?raw=true "SenseUI - Drop Down")
