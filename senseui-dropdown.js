@@ -245,13 +245,11 @@ define([
 				$(this).css("background-color", vars.row.backgroundColor);
 			}
 		);
-console.log(vars.id);
-console.log(vars.popupHeight);
+
 		// Height of popup
 		// vars.popupHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
 		// $('#SenseUI-DropDown .scrollable-menu').css('min-height', vars.popupHeight+'px');
 		// $('#SenseUI-DropDown .scrollable-menu').css('max-height', vars.popupHeight+'px');
-		// $( '#KfgBJXX_senseui_dropdown .scrollable-menu' ).css( "height", 200); 
 		$( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "height", vars.popupHeight); 
 		// Button Colors
 		vars.btnBgColor = (layout.btnBgColorHex !== '') ? layout.btnBgColorHex : Theme.palette[layout.btnBgColor];
@@ -260,6 +258,8 @@ console.log(vars.popupHeight);
 		$('#SenseUI-DropDown .btn.btn-default').css('color', vars.btnTxtColor);
 		//hack to show the popup on top of the container
 		$( 'div[tid="' + vars.id + '"] article' ).css( "overflow", 'visible' );
+
+		console.info('%c SenseUI-DropDown: ', 'color: red', 'Loaded!');
 	};
 
 	// define HTML template	
