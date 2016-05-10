@@ -137,6 +137,13 @@ define([
 									defaultValue: 200,
 									ref: "vars.popupHeight"
 								},
+								popupWidth: {
+									type: "string",
+									expression: "none",
+									label: "Popup Width",
+									defaultValue: 100,
+									ref: "vars.popupWidth"
+								},
 								borderRadius: {
 									type: "string",
 									label: "Border Radius",
@@ -177,6 +184,7 @@ define([
 			btnTxtColor: '#333333',
 			divPadding: 10,
 			popupHeight: (layout.vars.popupHeight)?layout.vars.popupHeight: 200,
+			popupWidth: (layout.vars.popupWidth)?layout.vars.popupWidth: 100,
 			borderRadius: (layout.vars.borderRadius) ? layout.vars.borderRadius : 4,
 		}
 		
@@ -215,7 +223,7 @@ define([
 		vars.template = '\
 			<div qv-extension class="senseui-dropdown" id="' + vars.id + '_senseui_dropdown">\
 				<div class="dropdown">\n\
-					<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">\n\
+					<button class="btn btn-default dropdown-toggle" type="button" id="' + vars.id + '_dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">\n\
 						' + vars.btnLabel + ' <span class="caret"></span>\n\
 					</button>\n\
 					<ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">\n\
@@ -233,6 +241,12 @@ define([
 		';
 
 		$element.html(vars.template);
+
+		// API hack
+		// $( '#' + vars.id + '_dropdownMenu' ).click(function(e) {
+		// 	$('#' + vars.id + '_dropdownMenu').dropdown('toggle');
+		// }
+
 
 		$( '#' + vars.id + '_senseui_dropdown a' ).click(function(e) {
 			var qElemNumber = parseInt(this.getAttribute('data-qElemNumber'));
@@ -259,7 +273,10 @@ define([
 		// vars.popupHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
 		// $('#SenseUI-DropDown .scrollable-menu').css('min-height', vars.popupHeight+'px');
 		// $('#SenseUI-DropDown .scrollable-menu').css('max-height', vars.popupHeight+'px');
-		$( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "height", vars.popupHeight); 
+		$( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "height", vars.popupHeight);
+		$( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "min-width", vars.popupWidth); 
+		$( '#' + vars.id + '_senseui_dropdown .btn-default' ).css( "width", vars.popupWidth); 
+		
 		// Button Colors
 		vars.btnBgColor = (layout.btnBgColorHex !== '') ? layout.btnBgColorHex : Theme.palette[layout.btnBgColor];
 		vars.btnTxtColor = (layout.btnTxtColorHex !== '') ? layout.btnTxtColorHex : Theme.palette[layout.btnTxtColor];

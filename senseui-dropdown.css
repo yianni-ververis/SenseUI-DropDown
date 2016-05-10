@@ -8,8 +8,18 @@
 }
 .scrollable-menu {
     height: auto;
-    max-height: 200px;
+    /*max-height: 200px;*/
     overflow-x: hidden;
-    min-width: 180px;
+    /*min-width: 180px;*/
     z-index: 9999999;
+}
+/* Dropdown API hack for now*/
+.qv-object-senseui-dropdown {
+	overflow: visible !important;
+}
+
+.btn-default.dropdown-toggle {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
