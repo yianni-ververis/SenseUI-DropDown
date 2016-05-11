@@ -6,7 +6,7 @@ define([
 	"core.utils/theme",
 	"./bootstrap.min",
 	"css!./bootstrap.css",
-	"css!./senseui-dropdown.css",
+	// "css!./senseui-dropdown.css",
 ], function(qlik, $, qvangular, _, Theme, ngBootstrap) {
 'use strict';
 
@@ -165,7 +165,7 @@ define([
 	me.paint = function($element,layout) {
 		// Set height of the drop down
 		var vars = {
-			v: 1.2,
+			v: 1.3.0,
 			id: layout.qInfo.qId,
 			field: layout.qHyperCube.qDimensionInfo[0].qFallbackTitle,
 			data: layout.qHyperCube.qDataPages[0].qMatrix,
@@ -217,8 +217,10 @@ define([
 			}
 		});
 
-		if (layout.vars.selected) {
-			vars.btnLabel = layout.vars.selected
+		for (var i=0; i < vars.data.length; i++) {
+			if (vars.data[i].qState=='S') {
+				vars.btnLabel = vars.data[i].dimension;
+			}
 		}
 
 		vars.template = '\
@@ -241,116 +243,105 @@ define([
 			</div>\n\
 		';
 
+		// CSS
+
+		// Button Colors
+		vars.btnBgColor = (layout.btnBgColorHex !== '') ? layout.btnBgColorHex : Theme.palette[layout.btnBgColor];
+		vars.btnTxtColor = (layout.btnTxtColorHex !== '') ? layout.btnTxtColorHex : Theme.palette[layout.btnTxtColor];
+
+		vars.css = '\n\
+			#' + vars.id + '_senseui_dropdown #SenseUI-DropDown {\n\
+				height: 100%; \n\
+				position: relative; \n\
+				overflow: auto;\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown #dropdownP {\n\
+			  padding: 5px;\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown .scrollable-menu {\n\
+			    height: auto;\n\
+			    overflow-x: hidden;\n\
+			    z-index: 9999999;\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown .qv-object-senseui-dropdown {\n\
+				overflow: visible !important;\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown .btn-default.dropdown-toggle {\n\
+			  white-space: nowrap;\n\
+			  overflow: hidden;\n\
+			  text-overflow:\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown li.active a {\n\
+				color: ' + vars.row.textHoverColor + ';\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown li a:hover,\n\
+			#' + vars.id + '_senseui_dropdown li:hover,\n\
+			#' + vars.id + '_senseui_dropdown li.active {\n\
+				color: ' + vars.row.textHoverColor + ';\n\
+				background-color: ' + vars.row.backgroundHoverColor + '\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown li.deactive {\n\
+				background-color: ' + vars.row.backgroundDeactiveColor + ';\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown .dropdown-menu,\n\
+			#' + vars.id + '_senseui_dropdown .btn-default {\n\
+				border-radius: ' + vars.borderRadius + 'px;\n\
+				width: ' + vars.popupWidth + 'px;\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown .btn-default {\n\
+				color: ' + vars.btnTxtColor + 'px;\n\
+				background-color: ' + vars.btnBgColor + 'px;\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown .scrollable-menu {\n\
+				height: ' + vars.popupHeight + 'px;\n\
+				min-width: ' + vars.popupWidth + 'px;\n\
+			}\n\
+		';
+
+		// $( '#' + vars.id + '_senseui_dropdown li.active a' ).css( "color", vars.row.textHoverColor );
+		// $( '#' + vars.id + '_senseui_dropdown li.active' ).css( "background-color", vars.row.backgroundHoverColor );
+		// $( '#' + vars.id + '_senseui_dropdown li.deactive' ).css( "background-color", vars.row.backgroundDeactiveColor );
+		// $( "#" + vars.id + "_senseui_dropdown li:not(.active,.deactive) a" ).hover(
+		// 	function() {
+		// 		$(this).css("color", vars.row.textHoverColor );
+		// 		$(this).css("background-color", vars.row.backgroundHoverColor);
+		// 	}, function() {
+		// 		$(this).css("color", vars.row.textColor );
+		// 		$(this).css("background-color", vars.row.backgroundColor);
+		// 	}
+		// );
+		// $( '#' + vars.id + '_senseui_dropdown .btn-default' ).css( "border-radius", vars.borderRadius + 'px' );
+		// $( '#' + vars.id + '_senseui_dropdown .dropdown-menu' ).css( "border-radius", vars.borderRadius + 'px' );
+
+		// Height of popup
+		// vars.popupHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
+		// $('#SenseUI-DropDown .scrollable-menu').css('min-height', vars.popupHeight+'px');
+		// $('#SenseUI-DropDown .scrollable-menu').css('max-height', vars.popupHeight+'px');
+		// $( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "height", vars.popupHeight);
+		// $( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "min-width", vars.popupWidth); 
+		// $( '#' + vars.id + '_senseui_dropdown .btn-default' ).css( "width", vars.popupWidth); 
+		
+		// $('#SenseUI-DropDown .btn.btn-default').css('background-color', vars.btnBgColor);
+		// $('#SenseUI-DropDown .btn.btn-default').css('color', vars.btnTxtColor);
+		//hack to show the popup on top of the container
+		$( 'div[tid="' + vars.id + '"] article' ).css( "overflow", 'visible' );
+
+		$("<style>").html(vars.css).appendTo("head");
 		$element.html(vars.template);
-
-		// API hack
-		// $( '#' + vars.id + '_dropdownMenu' ).click(function(e) {
-		// 	$('#' + vars.id + '_dropdownMenu').dropdown('toggle');
-		// }
-
 
 		$( '#' + vars.id + '_senseui_dropdown a' ).click(function(e) {
 			var qElemNumber = parseInt(this.getAttribute('data-qElemNumber'));
 			vars.this.backendApi.selectValues(0, [qElemNumber], vars.multipleSelections);
 		});
 
-		// CSS
-		$( '#' + vars.id + '_senseui_dropdown li.active a' ).css( "color", vars.row.textHoverColor );
-		$( '#' + vars.id + '_senseui_dropdown li.active' ).css( "background-color", vars.row.backgroundHoverColor );
-		$( '#' + vars.id + '_senseui_dropdown li.deactive' ).css( "background-color", vars.row.backgroundDeactiveColor );
-		$( "#" + vars.id + "_senseui_dropdown li:not(.active,.deactive) a" ).hover(
-			function() {
-				$(this).css("color", vars.row.textHoverColor );
-				$(this).css("background-color", vars.row.backgroundHoverColor);
-			}, function() {
-				$(this).css("color", vars.row.textColor );
-				$(this).css("background-color", vars.row.backgroundColor);
-			}
-		);
-		$( '#' + vars.id + '_senseui_dropdown .btn-default' ).css( "border-radius", vars.borderRadius + 'px' );
-		$( '#' + vars.id + '_senseui_dropdown .dropdown-menu' ).css( "border-radius", vars.borderRadius + 'px' );
-
-		// Height of popup
-		// vars.popupHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
-		// $('#SenseUI-DropDown .scrollable-menu').css('min-height', vars.popupHeight+'px');
-		// $('#SenseUI-DropDown .scrollable-menu').css('max-height', vars.popupHeight+'px');
-		$( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "height", vars.popupHeight);
-		$( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "min-width", vars.popupWidth); 
-		$( '#' + vars.id + '_senseui_dropdown .btn-default' ).css( "width", vars.popupWidth); 
-		
-		// Button Colors
-		vars.btnBgColor = (layout.btnBgColorHex !== '') ? layout.btnBgColorHex : Theme.palette[layout.btnBgColor];
-		vars.btnTxtColor = (layout.btnTxtColorHex !== '') ? layout.btnTxtColorHex : Theme.palette[layout.btnTxtColor];
-		$('#SenseUI-DropDown .btn.btn-default').css('background-color', vars.btnBgColor);
-		$('#SenseUI-DropDown .btn.btn-default').css('color', vars.btnTxtColor);
-		//hack to show the popup on top of the container
-		$( 'div[tid="' + vars.id + '"] article' ).css( "overflow", 'visible' );
-
 		console.info('%c SenseUI-DropDown ' + vars.v + ': ', 'color: red', '#' + vars.id + ' Loaded!');
 	};
 
 	// define HTML template	
-	// me.template = '\
-	// 	<div qv-extension class="ng-scope" id="SenseUI-DropDown">\n\
-	// 		<div class="dropdown">\n\
-	// 			<button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">\n\
-	// 				{{currentItem}} <span class="caret"></span>\n\
-	// 			</button>\n\
-	// 			<ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">\n\
-	// 				<li ng-repeat="item in items" ng-class="(item.qText===currentItem) ? \'active\' : \'\' ">\n\
-	// 					<a ng-click="select(this)">{{item.qText}}</a>\n\
-	// 				</li>\n\
-	// 			</ul>\n\
-	// 		</div>\n\
-	// 	</div>\n\
-	// ';
+	// me.template = '';
 
 	// Controller for binding
-	me.controller =['$scope', function($scope){
-		// console.log($scope.$parent.layout)
-		// var field = $scope.$parent.layout.qHyperCube.qFallbackTitle;
-		// var object = $scope.$parent.layout.qHyperCube.qDataPages[0].qMatrix;
-
-		// var self = this;
-		// var vars = {
-		// 	items: {},
-		// 	currentItem: $scope.$parent.layout.btnLabel,
-		// 	dimension: field
-		// }
-
-		// // Get Selections
-		// me.app.getList("SelectionObject", function(reply){
-		// 	var selectedFields = reply.qSelectionObject.qSelections;
-
-		// 	if (selectedFields.length >= 1) {
-		// 		$.each(selectedFields, function(key, value) {
-		// 			if (value.qField !== vars.dimension) {
-		// 				$scope.currentItem = vars.currentItem;
-		// 				$('#SenseUI-DropDown .scrollable-menu li').removeClass('active');
-		// 			} else {
-		// 				$scope.currentItem = selectedFields[0].qSelectedFieldSelectionInfo[0].qName;
-		// 			}
-		// 		});
-		// 	} else {			
-		// 		$scope.currentItem = $scope.$parent.layout.btnLabel;
-		// 		$('#SenseUI-DropDown .scrollable-menu li').removeClass('active');
-		// 	}
-		// });
-
-		// $.each(object, function(key, value) {
-		// 	if (typeof value[0].qText !== 'undefined') {
-		// 		vars.items[key] = value[0];
-		// 	}				
-		// });
-
-		// $scope.items = vars.items;
-		// $scope.currentItem = vars.currentItem;
-
-		// $scope.select = function (element) {
-		// 	$scope.backendApi.selectValues(0, [element.item.qElemNumber], false);
-		// }
-
-	}];
+	// me.controller =['$scope', function($scope){}];
 
 	return me;
 });
