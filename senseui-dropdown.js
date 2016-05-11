@@ -165,6 +165,7 @@ define([
 	me.paint = function($element,layout) {
 		// Set height of the drop down
 		var vars = {
+			v: 1.2,
 			id: layout.qInfo.qId,
 			field: layout.qHyperCube.qDimensionInfo[0].qFallbackTitle,
 			data: layout.qHyperCube.qDataPages[0].qMatrix,
@@ -285,7 +286,7 @@ define([
 		//hack to show the popup on top of the container
 		$( 'div[tid="' + vars.id + '"] article' ).css( "overflow", 'visible' );
 
-		console.info('%c SenseUI-DropDown: ', 'color: red', '#' + vars.id + ' Loaded!');
+		console.info('%c SenseUI-DropDown ' + vars.v + ': ', 'color: red', '#' + vars.id + ' Loaded!');
 	};
 
 	// define HTML template	
