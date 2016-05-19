@@ -165,7 +165,7 @@ define([
 	me.paint = function($element,layout) {
 		// Set height of the drop down
 		var vars = {
-			v: 1.3.0,
+			v: '1.3.0',
 			id: layout.qInfo.qId,
 			field: layout.qHyperCube.qDimensionInfo[0].qFallbackTitle,
 			data: layout.qHyperCube.qDataPages[0].qMatrix,
@@ -293,38 +293,13 @@ define([
 				background-color: ' + vars.btnBgColor + 'px;\n\
 			}\n\
 			#' + vars.id + '_senseui_dropdown .scrollable-menu {\n\
-				height: ' + vars.popupHeight + 'px;\n\
+				max-height: ' + vars.popupHeight + 'px;\n\
 				min-width: ' + vars.popupWidth + 'px;\n\
 			}\n\
 		';
 
-		// $( '#' + vars.id + '_senseui_dropdown li.active a' ).css( "color", vars.row.textHoverColor );
-		// $( '#' + vars.id + '_senseui_dropdown li.active' ).css( "background-color", vars.row.backgroundHoverColor );
-		// $( '#' + vars.id + '_senseui_dropdown li.deactive' ).css( "background-color", vars.row.backgroundDeactiveColor );
-		// $( "#" + vars.id + "_senseui_dropdown li:not(.active,.deactive) a" ).hover(
-		// 	function() {
-		// 		$(this).css("color", vars.row.textHoverColor );
-		// 		$(this).css("background-color", vars.row.backgroundHoverColor);
-		// 	}, function() {
-		// 		$(this).css("color", vars.row.textColor );
-		// 		$(this).css("background-color", vars.row.backgroundColor);
-		// 	}
-		// );
-		// $( '#' + vars.id + '_senseui_dropdown .btn-default' ).css( "border-radius", vars.borderRadius + 'px' );
-		// $( '#' + vars.id + '_senseui_dropdown .dropdown-menu' ).css( "border-radius", vars.borderRadius + 'px' );
-
-		// Height of popup
-		// vars.popupHeight = $element[0].offsetHeight - vars.btnHeight - vars.divPadding;
-		// $('#SenseUI-DropDown .scrollable-menu').css('min-height', vars.popupHeight+'px');
-		// $('#SenseUI-DropDown .scrollable-menu').css('max-height', vars.popupHeight+'px');
-		// $( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "height", vars.popupHeight);
-		// $( '#' + vars.id + '_senseui_dropdown .scrollable-menu' ).css( "min-width", vars.popupWidth); 
-		// $( '#' + vars.id + '_senseui_dropdown .btn-default' ).css( "width", vars.popupWidth); 
-		
-		// $('#SenseUI-DropDown .btn.btn-default').css('background-color', vars.btnBgColor);
-		// $('#SenseUI-DropDown .btn.btn-default').css('color', vars.btnTxtColor);
-		//hack to show the popup on top of the container
-		$( 'div[tid="' + vars.id + '"] article' ).css( "overflow", 'visible' );
+		//hack to show the popup on top of the container, including on a mashup for the API
+		$( 'div[tid="' + vars.id + '"] article, #' + vars.id + ' article' ).css( "overflow", 'visible' );
 
 		$("<style>").html(vars.css).appendTo("head");
 		$element.html(vars.template);
