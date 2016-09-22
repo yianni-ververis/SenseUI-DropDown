@@ -165,7 +165,7 @@ define([
 	me.paint = function($element,layout) {
 		// Set height of the drop down
 		var vars = {
-			v: '1.3.0',
+			v: '1.3.1',
 			id: layout.qInfo.qId,
 			field: layout.qHyperCube.qDimensionInfo[0].qFallbackTitle,
 			data: layout.qHyperCube.qDataPages[0].qMatrix,
@@ -192,8 +192,8 @@ define([
 		vars.data = vars.data.map(function(d) {
 			return {
 				"dimension":d[0].qText,
-				"measure":d[1].qText,
-				"measureNum":d[1].qNum,
+				"measure": (d[1].qText) ? d[1].qText : null,
+				"measureNum": (d[1].qNum) ? d[1].qNum : null,
 				"qElemNumber":d[0].qElemNumber,
 				"qState":d[0].qState,
 			}
@@ -227,7 +227,7 @@ define([
 			<div qv-extension class="senseui-dropdown" id="' + vars.id + '_senseui_dropdown">\
 				<div class="dropdown">\n\
 					<button class="btn btn-default dropdown-toggle" type="button" id="' + vars.id + '_dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">\n\
-						' + vars.btnLabel + ' <span class="caret"></span>\n\
+						' + vars.btnLabel + ' <span class="caret pull-right"></span>\n\
 					</button>\n\
 					<ul class="dropdown-menu scrollable-menu" aria-labelledby="dropdownMenu1">\n\
 		';
@@ -287,6 +287,10 @@ define([
 			#' + vars.id + '_senseui_dropdown .btn-default {\n\
 				border-radius: ' + vars.borderRadius + 'px;\n\
 				width: ' + vars.popupWidth + 'px;\n\
+				text-align: left;\n\
+			}\n\
+			#' + vars.id + '_senseui_dropdown .btn-default .caret {\n\
+				margin-top: 10px;\n\
 			}\n\
 			#' + vars.id + '_senseui_dropdown .btn-default {\n\
 				color: ' + vars.btnTxtColor + 'px;\n\

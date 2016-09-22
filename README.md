@@ -19,6 +19,8 @@ Coming up, like the senseui-filter:
 
 ![SenseUI - Drop Down](/screenshot3.png?raw=true "SenseUI - Drop Down")
 
+![SenseUI - Drop Down](/screenshot4.png?raw=true "SenseUI - Drop Down")
+
 ---
 
 [Download zip file](https://github.com/yianni-ververis/SenseUI-DropDown/archive/master.zip)
