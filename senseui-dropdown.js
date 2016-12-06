@@ -3,8 +3,8 @@ define([
 	"jquery",
 	"qvangular",
 	'underscore',
-	// "core.utils/theme",
-	"text!themes/old/sense/theme.json", // For Qlik Sense > 3.1.2
+	// "core.utils/theme",  // For Qlik Sense < 3.1.2
+	"text!themes/old/sense/theme.json", // For Qlik Sense >= 3.1.2
 	"./bootstrap.min",
 	"css!./bootstrap.css",
 	// "css!./senseui-dropdown.css",
@@ -166,7 +166,7 @@ define([
 	me.paint = function($element,layout) {
 		// Set height of the drop down
 		var vars = {
-			v: '1.3.1',
+			v: '1.3.2',
 			id: layout.qInfo.qId,
 			field: layout.qHyperCube.qDimensionInfo[0].qFallbackTitle,
 			data: layout.qHyperCube.qDataPages[0].qMatrix,
