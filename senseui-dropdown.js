@@ -3,7 +3,8 @@ define([
 	"jquery",
 	"qvangular",
 	'underscore',
-	"core.utils/theme",
+	// "core.utils/theme",
+	"text!themes/old/sense/theme.json", // For Qlik Sense > 3.1.2
 	"./bootstrap.min",
 	"css!./bootstrap.css",
 	// "css!./senseui-dropdown.css",
