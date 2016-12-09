@@ -11,6 +11,8 @@ define([
 ], function(qlik, $, qvangular, _, Theme, ngBootstrap) {
 'use strict';
 
+	Theme = JSON.parse(Theme);
+
 	// Define properties
 	var me = {
 		initialProperties: {
