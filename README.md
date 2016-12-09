@@ -21,6 +21,14 @@ Coming up, like the senseui-filter:
 
 ![SenseUI - Drop Down](/screenshot4.png?raw=true "SenseUI - Drop Down")
 
+*********************************
+**Note for Qlik Sense <3.1.2**
+*********************************
+
+- senseui-dropdown.js 
+	- uncomment Line 6
+	- comment/delete Line 7 & Line 14
+
 ---
 
 [Download zip file](https://github.com/yianni-ververis/SenseUI-DropDown/archive/master.zip)
